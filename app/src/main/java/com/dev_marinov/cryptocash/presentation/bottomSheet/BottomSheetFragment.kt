@@ -101,26 +101,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             transitionToShowCurrencyFragment()
         }
 
-//        // УСТАНОВКА ДАТЫ И ВРЕМЯ В БОТОМЩИТ
-//        viewModel.datetime.asLiveData().observe(viewLifecycleOwner) { Date ->
-//            Date?.let {
-//                if (it.datePicker == "null" && it.timePicker == "null") {
-//                    binding.tvDate.text = getString(R.string.choose_date)
-//                    binding.tvTime.text = getString(R.string.choose_time)
-//                    binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
-//                    binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
-//                } else {
-//                    binding.tvDate.text = it.datePicker
-//                    binding.tvTime.text = it.timePicker
-//                    binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-//                    binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-//
-//                    binding.tvDelete.visibility = View.VISIBLE
-//                    binding.tvCancel.visibility = View.GONE
-//                }
-//            }
-//        }
-/////////////////////////////////////////////
         viewModel.date.observe(viewLifecycleOwner) {
             if (it == null) {
                 binding.tvDate.text = getString(R.string.choose_date)

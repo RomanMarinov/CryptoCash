@@ -99,17 +99,6 @@ class BottomSheetViewModel @Inject constructor(
             _date.value != null || _time.value != null || _date.value != null && _time.value != null
     }
 
-    fun retrieveData() {
-//        datetime.onEach {
-//            if (it.datePicker != "null" && it.timePicker != "null") {
-//                _date.postValue(it.datePicker)
-//                _time.postValue(it.timePicker)
-//                _buttonDeleteBottomSheet.postValue(true)
-//            } else {
-//                _buttonDeleteBottomSheet.postValue(false)
-//            }
-//        }
-    }
 
     fun deleteDateTimeDataStore() {
         viewModelScope.launch(Dispatchers.IO) {

@@ -8,13 +8,3 @@ message SearchRequest{
   string time = 2;
   double rate = 3;
 }
-
-//message SearchRequestDate{
-//  string date = 1;
-//}
-//message SearchRequestTime{
-//  string time = 1;
-//}
-//message SearchRequestRate{
-//  double rate = 1;
-//}

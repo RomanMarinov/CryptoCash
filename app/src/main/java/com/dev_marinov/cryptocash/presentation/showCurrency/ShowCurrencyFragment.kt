@@ -29,10 +29,8 @@ class ShowCurrencyFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_show_currency, container, false)
 
-
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,7 +40,6 @@ class ShowCurrencyFragment : Fragment() {
         viewModel.dateTime.observe(viewLifecycleOwner) {
             binding.tvRate.text = it.rate.toString()
         }
-
 
         // НЕДОСТАТОК - ПОВТОРЕНИЕ
         viewModel.dateTime.observe(viewLifecycleOwner) { searchRequest ->
@@ -56,10 +53,6 @@ class ShowCurrencyFragment : Fragment() {
                 }
             }
         }
-
-//        viewModel.rate.asLiveData().observe(viewLifecycleOwner) {
-//            binding.tvRate.text = "= ${it?.rateEthereum} $"
-//        }
 
         binding.btChooseDate.setOnClickListener {
             findNavController().navigate(R.id.action_showCurrencyFragment_to_bottomSheetFragment)
