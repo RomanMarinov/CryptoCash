@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/gradient_1_bt_choose_date"
+        android:duration="2000" />
+    <item
+        android:drawable="@drawable/gradient_2_bt_choose_date"
+        android:duration="2000" />
+    <item
+        android:drawable="@drawable/gradient_3_bt_choose_date"
+        android:duration="2000" />
+
+</animation-list>

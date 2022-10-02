@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.dev_marinov.cryptocash.presentation.splash.SplashFragment"
+        android:label="SplashFragment"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_showCurrencyFragment"
+            app:destination="@id/showCurrencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/showCurrencyFragment"
+        android:name="com.dev_marinov.cryptocash.presentation.showCurrency.ShowCurrencyFragment"
+        android:label="ShowCurrencyFragment" >
+        <action
+            android:id="@+id/action_showCurrencyFragment_to_bottomSheetFragment"
+            app:destination="@id/bottomSheetFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/bottomSheetFragment"
+        android:name="com.dev_marinov.cryptocash.presentation.bottomSheet.BottomSheetFragment"
+        android:label="BottomSheetFragment" >
+        <action
+            android:id="@+id/action_bottomSheetFragment_to_showCurrencyFragment"
+            app:destination="@id/showCurrencyFragment" />
+    </dialog>
+
+</navigation>

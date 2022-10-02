@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">CryptoCash</string>
+    <string name="name">CryptoCash</string>
+    <string name="one">1</string>
+    <string name="zero">0</string>
+    <string name="now">Сейчас</string>
+    <string name="cancel">Отменить</string>
+    <string name="ok">Готово</string>
+    <string name="head">Дата и время</string>
+    <string name="head_choose">Выберите дату</string>
+    <string name="choose_date">Выберите дату</string>
+    <string name="choose_time">Выберите время</string>
+    <string name="delete">Удалить</string>
+
+    <string name="now2">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="previous_week">Предыдущая неделя</string>
+    <string name="current">Текущие дата и время</string>
+    <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
+
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
