@@ -83,7 +83,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.tvOk.setOnClickListener {
             viewModel.saveData()
-            viewModel.retrieveData()
+            //viewModel.retrieveData()
 //                viewModel.deleteDateTime()
             // здесь должна происиходить запись в базу данных
             transitionToShowCurrencyFragment()
