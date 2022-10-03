@@ -1,6 +1,7 @@
 package com.dev_marinov.cryptocash.di
 
-import com.dev_marinov.cryptocash.data.remote.USDService
+
+import com.dev_marinov.cryptocash.data.rate.remote.USDService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

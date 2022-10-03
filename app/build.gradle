@@ -1,15 +1,9 @@
 plugins {
-    id "com.google.protobuf" version "0.8.17"
-
-
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'dagger.hilt.android.plugin'
-
-
-//    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -96,31 +90,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:4.2.2"
 
     // datastore
-//    implementation("androidx.datastore:datastore-preferences:1.0.0")
-//    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5" // для хранения списков
-//  //  implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2" // для анализа данных json
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5" // для хранения списков
 
-    // proto dataStore
-    implementation  "androidx.datastore:datastore:1.0.0"
-    implementation  "com.google.protobuf:protobuf-javalite:3.18.0"
-//    implementation "androidx.datastore:datastore-preferences:1.0.0"
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.14.0"
-    }
-
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
 }

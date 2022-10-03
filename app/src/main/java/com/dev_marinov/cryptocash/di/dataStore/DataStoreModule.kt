@@ -1,7 +1,7 @@
 package com.dev_marinov.cryptocash.di.dataStore
 
 import android.content.Context
-import com.dev_marinov.cryptocash.data.local.ProtoDataStoreRepository
+import com.dev_marinov.cryptocash.data.datetime.DateTimeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,5 +15,5 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context) = ProtoDataStoreRepository(context)
+    fun provideDataStore(@ApplicationContext context: Context) = DateTimeRepository(context)
 }

@@ -18,7 +18,6 @@ import java.util.*
 
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.dev_marinov.cryptocash.databinding.FragmentBottomSheetBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,12 +33,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("BottomSheetFragment", "333 загрузился")
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_bottom_sheet, container, false)
 
-//        val currentDay = SimpleDateFormat("dd",Locale.getDefault()).format(Date())
-//        Log.d("curday", " загрузился 33333333333===" + currentDay)
         return binding.root
     }
 
@@ -47,12 +43,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val calendar: Calendar = Calendar.getInstance()
-
-        binding.tvDate.setOnClickListener { getDate(calendar) }
-        binding.tvTime.setOnClickListener { getTime(calendar) }
-
-        // показывает СИНЮЮ ИЛИ ГОЛУБУЮ КНОПКУ при заполнении, но не сохранении
         viewModel.buttonOkBottomSheet.observe(viewLifecycleOwner) {
             when (it) {
                 true -> {
@@ -81,13 +71,48 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
+        viewModel.date.observe(viewLifecycleOwner) {
+            if (it == null) {
+                binding.tvDate.text = getString(R.string.choose_date)
+                binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
+            } else {
+                binding.tvDate.text = it
+                binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+        }
+
+        viewModel.time.observe(viewLifecycleOwner) {
+            if (it == null) {
+                binding.tvTime.text = getString(R.string.choose_time)
+                binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
+            }
+            else {
+                binding.tvTime.text = it
+                binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+        }
+
+        viewModel.curDateName.observe(viewLifecycleOwner) {
+            binding.tvNowValue.text = it
+            binding.tvPrevWeekValue.text = it
+        }
+        viewModel.prevDateName.observe(viewLifecycleOwner) { binding.tvYesterdayValue.text = it }
+        viewModel.curDateTime.observe(viewLifecycleOwner) { binding.tvCurValue.text = it }
+
+        viewModel.uploadedData.observe(viewLifecycleOwner) {
+            val toast = Toast.makeText(
+                requireContext(), getString(R.string.copied_to_clipboard),
+                Toast.LENGTH_SHORT
+            )
+            toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 30)
+            toast.show()
+        }
+
         binding.tvOk.setOnClickListener {
-            viewModel.saveData()
-            //viewModel.retrieveData()
-//                viewModel.deleteDateTime()
-            // здесь должна происиходить запись в базу данных
+            viewModel.saveDateTime()
             transitionToShowCurrencyFragment()
         }
+
         binding.tvDelete.setOnClickListener {
             viewModel.deleteDateTimeDataStore()
             viewModel.deleteDataTimeLiveData()
@@ -101,51 +126,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             transitionToShowCurrencyFragment()
         }
 
-        viewModel.date.observe(viewLifecycleOwner) {
-            if (it == null) {
-                binding.tvDate.text = getString(R.string.choose_date)
-                binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
-                Log.d("333", " viewModel.date.observe NULL=" + it)
-            } else {
-                binding.tvDate.text = it
-                binding.tvDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                Log.d("333", " viewModel.date.observe NOT NULL=" + it)
-            }
-        }
-
-        viewModel.time.observe(viewLifecycleOwner) {
-            if (it == null) {
-                binding.tvTime.text = getString(R.string.choose_time)
-                binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_grey))
-            }
-            else {
-                binding.tvTime.text = it
-                binding.tvTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                Log.d("333", " загр it time live =" + it)
-            }
-        }
-        ////////////////////////////////////////////////////////
-
-
-        // ВСЕ НИЖНИЕ ВЬЮШКИ
-        viewModel.curDateName.observe(viewLifecycleOwner) {
-            binding.tvNowValue.text = it
-            binding.tvPrevWeekValue.text = it
-        }
-        viewModel.prevDateName.observe(viewLifecycleOwner) { binding.tvYesterdayValue.text = it }
-        viewModel.curDateTime.observe(viewLifecycleOwner) { binding.tvCurValue.text = it }
-        //////////////////////////////////////
-
-        viewModel.uploadedData.observe(viewLifecycleOwner) {
-            val toast = Toast.makeText(
-                requireContext(), R.string.copied_to_clipboard,
-                Toast.LENGTH_SHORT
-            )
-            toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 30)
-            toast.show()
-        }
-
-
+        val calendar: Calendar = Calendar.getInstance()
+        binding.tvDate.setOnClickListener { getDate(calendar) }
+        binding.tvTime.setOnClickListener { getTime(calendar) }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -157,9 +140,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             android.R.style.Theme_DeviceDefault_Dialog, { datePicker, year, month, day ->
-                //           Log.d("it", " загрузился 33333333333===" + year + " " + month + " " + day)
                 viewModel.onDateSelected(year = year, month = month, day = day)
-                //viewModel.retrieveData()
             }, year, month, day)
         datePickerDialog.show()
     }
@@ -174,7 +155,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 requireContext(),
                 android.R.style.Theme_Material_Dialog_Alert, { timePicker, hour, minute ->
                     viewModel.onTimeSelected(hour = hour, minute = minute)
-                    //viewModel.retrieveData()
+
                 }, hour, minute, true)
         timePickerDialog.show()
 

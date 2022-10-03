@@ -3,20 +3,16 @@ package com.dev_marinov.cryptocash.presentation.bottomSheet
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dev_marinov.cryptocash.R
 import com.dev_marinov.cryptocash.SingleLiveEvent
-import com.dev_marinov.cryptocash.data.ConvertDate
-import com.dev_marinov.cryptocash.data.local.ProtoDataStoreRepository
+import com.dev_marinov.cryptocash.data.datetime.ConvertDate
+import com.dev_marinov.cryptocash.data.datetime.DateTimeRepository
 
 import com.dev_marinov.cryptocash.domain.DateConverter
+import com.dev_marinov.cryptocash.domain.DateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -26,14 +22,12 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class BottomSheetViewModel @Inject constructor(
-    //private val dataStoreRepository: DataStoreRepository,
-    private val protoDataStoreRepository: ProtoDataStoreRepository
-    ) :
+    private val dataStoreRepository: DateTimeRepository,
+) :
     ViewModel() {
 
     private val dateConverter = DateConverter()
 
-    //val datetime: Flow<Date> = dataStoreRepository.dateTime
     private val _date: MutableLiveData<String> = MutableLiveData()
     private val _time: MutableLiveData<String> = MutableLiveData()
     val date: LiveData<String> = _date
@@ -46,14 +40,11 @@ class BottomSheetViewModel @Inject constructor(
     private val _curDateTime: MutableLiveData<String> = MutableLiveData()
     var curDateTime: LiveData<String> = _curDateTime
 
-
-    //////////////////////////////////
     private val _uploadedData = SingleLiveEvent<String>()
     val uploadedData: SingleLiveEvent<String> = _uploadedData
 
     private val _buttonOkBottomSheet: MutableLiveData<Boolean> = MutableLiveData()
     var buttonOkBottomSheet: LiveData<Boolean> = _buttonOkBottomSheet
-
     private val _buttonDeleteBottomSheet: MutableLiveData<Boolean> = MutableLiveData()
     var buttonDeleteBottomSheet: LiveData<Boolean> = _buttonDeleteBottomSheet
 
@@ -62,13 +53,15 @@ class BottomSheetViewModel @Inject constructor(
         _curDateName.postValue(getCurrentDayName())
         _prevDateName.postValue(getPreviousDayName())
         _curDateTime.postValue(getCurrentDateTime())
-        //startRetrieveData()
     }
 
-    fun saveData() {
+    fun saveDateTime() {
         viewModelScope.launch(Dispatchers.IO) {
-            _date.value?.let { protoDataStoreRepository.updateDate(it) }
-            _time.value?.let { protoDataStoreRepository.updateTime(it) }
+            _date.value?.let { date ->
+                _time.value?.let { time ->
+                    dataStoreRepository.saveDateTime(DateTime(date, time))
+                }
+            }
         }
         getToast()
     }
@@ -102,7 +95,7 @@ class BottomSheetViewModel @Inject constructor(
 
     fun deleteDateTimeDataStore() {
         viewModelScope.launch(Dispatchers.IO) {
-            //dataStoreRepository.deleteData()
+            dataStoreRepository.clear()
         }
     }
 
@@ -127,9 +120,5 @@ class BottomSheetViewModel @Inject constructor(
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date())
         return sdf.format(Date())
     }
-
-//    private fun startRetrieveData() {
-//        if (_date.value == null && _time.value == null) retrieveData()
-//    }
 
 }

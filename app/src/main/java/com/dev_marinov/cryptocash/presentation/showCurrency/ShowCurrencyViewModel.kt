@@ -1,48 +1,62 @@
 package com.dev_marinov.cryptocash.presentation.showCurrency
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.dev_marinov.cryptocash.data.Date
-import com.dev_marinov.cryptocash.data.Rate
-//import com.dev_marinov.cryptocash.data.dataStore.DataStoreRepository
-import com.dev_marinov.cryptocash.data.local.ProtoDataStoreRepository
+import com.dev_marinov.cryptocash.data.datetime.DateTimeRepository
+import com.dev_marinov.cryptocash.domain.IRateRepository
 
-import com.dev_marinov.cryptocash.domain.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ShowCurrencyViewModel @Inject constructor(
-    private val protoDataStoreRepository: ProtoDataStoreRepository
+    private val iRateRepository: IRateRepository,
+    private val dataStoreRepository: DateTimeRepository
 ) : ViewModel() {
 
-    val dateTime = protoDataStoreRepository.dataPreferencesFlow.asLiveData()
+    val dateTime = dataStoreRepository.dateTime.asLiveData()
+    val rateStore = dataStoreRepository.rate.asLiveData()
 
-    fun updateRate(rate: Double) {
-        viewModelScope.launch(Dispatchers.IO) {
-            protoDataStoreRepository.updateRate(rate = rate)
-        }
-    }
+    private var job: Job? = null
 
-    var countRate = 1.1
+    private val _rate: MutableLiveData<Double> = MutableLiveData()
+    val rate: LiveData<Double> = _rate
 
-    private fun getFAKERateApiCycle(): Job {
-        return viewModelScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                //saveRate(countRate)
-                updateRate(countRate)
-                delay(1000L)
-                countRate += 0.1
+    private fun getRate() {
+        job = viewModelScope.launch(Dispatchers.IO) {
+            while (true) {
+                iRateRepository.getUSD()?.let {
+                    _rate.postValue(it.usd)
+                    delay(1000L)
+                }
             }
         }
     }
 
-    fun start(){
-        getFAKERateApiCycle().start()
+    fun cancelJobSaveRate() {
+        job?.cancel()
+        _rate.value?.let { saveRate(it) }
     }
-    fun cancel(){
-        getFAKERateApiCycle().cancel()
+
+    fun startJob() {
+        getRate()
+    }
+
+    private fun saveRate(rate: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveRate(rate = rate)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+    }
+
+    fun onStop() {
+        job?.cancel()
     }
 }

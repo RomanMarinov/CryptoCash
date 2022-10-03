@@ -1,6 +1,6 @@
-package com.dev_marinov.cryptocash.data.remote
+package com.dev_marinov.cryptocash.data.rate.remote
 
-import com.dev_marinov.cryptocash.data.remote.dto.RateDTO
+import com.dev_marinov.cryptocash.data.rate.remote.dto.RateDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

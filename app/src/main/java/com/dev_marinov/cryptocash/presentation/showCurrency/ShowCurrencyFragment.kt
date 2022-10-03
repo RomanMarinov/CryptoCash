@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.dev_marinov.cryptocash.R
 import com.dev_marinov.cryptocash.databinding.FragmentShowCurrencyBinding
@@ -25,11 +24,15 @@ class ShowCurrencyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("ShowCurrencyFragment", "333 загрузился")
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_show_currency, container, false)
 
         return binding.root
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onStop()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,19 +40,22 @@ class ShowCurrencyFragment : Fragment() {
 
         animation()
 
-        viewModel.dateTime.observe(viewLifecycleOwner) {
-            binding.tvRate.text = it.rate.toString()
+        viewModel.rate.observe(viewLifecycleOwner) {
+            binding.tvRate.text = it.toString()
         }
 
-        // НЕДОСТАТОК - ПОВТОРЕНИЕ
-        viewModel.dateTime.observe(viewLifecycleOwner) { searchRequest ->
-            searchRequest?.let {
-                if (it.date == "null" && it.time == "null") {
-                    viewModel.cancel()
-                    binding.btNow.text = getString(R.string.now)
-                } else {
-                    viewModel.start()
-                    binding.btNow.text = it.date + " " + it.time
+        viewModel.dateTime.observe(viewLifecycleOwner) {
+            if (it.date == "null" && it.time == "null") {
+                viewModel.startJob()
+                binding.btNow.text = getString(R.string.now)
+            } else {
+                binding.btNow.text = it.date + " " + it.time
+                viewModel.cancelJobSaveRate()
+
+                viewModel.rateStore.observe(viewLifecycleOwner) { rate ->
+                    rate?.let { rateValue ->
+                        binding.tvRate.text = rateValue.usd.toString()
+                    }
                 }
             }
         }
@@ -65,6 +71,7 @@ class ShowCurrencyFragment : Fragment() {
         animationDrawable.setExitFadeDuration(2000)
         animationDrawable.start()
     }
-
-
 }
+
+
+

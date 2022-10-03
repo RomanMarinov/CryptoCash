@@ -1,6 +1,6 @@
 package com.dev_marinov.cryptocash.domain
 
-import com.dev_marinov.cryptocash.data.ConvertDate
+import com.dev_marinov.cryptocash.data.datetime.ConvertDate
 
 class DateConverter {
 
