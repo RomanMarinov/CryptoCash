@@ -14,6 +14,7 @@
 - mvvm, <br/>
 - di hilt, <br/>
 - flow, <br/>
+- liveData, <br/>
 - coroutines, <br/>
 - bottom_sheet, <br/>
 - navigation, <br/>
