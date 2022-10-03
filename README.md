@@ -13,6 +13,8 @@
 - viewModel,<br/>
 - mvvm, <br/>
 - di hilt, <br/>
+- flow, <br/>
+- bottom_sheet, <br/>
 - navigation, <br/>
 - dataStore, <br/>
 - databinding, <br/>
